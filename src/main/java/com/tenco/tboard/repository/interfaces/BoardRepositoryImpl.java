@@ -14,7 +14,9 @@ public class BoardRepositoryImpl implements BoardRepository {
 	private static final String SELECT_ALL_BOARDS = " select * from board order by created_at desc limit ? offset ?  ";
 	private static final String COUNT_ALL_BOARDS = " SELECT COUNT(*) AS COUNT FROM BOARD ";
 	private static final String INSERT_BOARD_SQL = " INSERT INTO board(user_id,title,content) values ( ? , ? , ? ) ";
-
+	private static final String DELETE_BOARD_SQL= " DELETE FROM board where id = ? ";
+	private static final String SELECT_BOARD_BY_ID= " SELECT * FROM board where id = ? ";
+	private static final String UPDATE_BOARD_SQL = " UPDATE board SET title = ?, content = ? ";
 	@Override
 	public void addBoard(Board board) {
 		// 트랜잭션에 대해 설명해보세요.
@@ -37,22 +39,43 @@ public class BoardRepositoryImpl implements BoardRepository {
 	}
 
 	@Override
-	public void updateBoard(Board board, int principalId) {
-		// TODO Auto-generated method stub
-
+	public void updateBoard(Board board) {
+		// 트랜잭션에 대해 설명해보세요.
+				// 트랜잭션 = 하나의 논리적인 작업의 단위
+				try (Connection conn = DBUtil.getConnection()) {
+					conn.setAutoCommit(false);
+					try (PreparedStatement pstmt = conn.prepareStatement(UPDATE_BOARD_SQL)) {
+						pstmt.setString(1, board.getTitle());
+						pstmt.setString(2, board.getContent());
+						pstmt.setInt(2, board.getId());
+						pstmt.executeUpdate();
+						conn.commit();
+					} catch (Exception e) {
+						conn.rollback();
+						e.printStackTrace();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 	}
 
 	@Override
 	public void deleteBoard(int id) {
-		// TODO Auto-generated method stub
+		try (Connection conn=DBUtil.getConnection();){
+			conn.setAutoCommit(false);
+			try (PreparedStatement pstmt = conn.prepareStatement(DELETE_BOARD_SQL)){
+				pstmt.setInt(1, id);
+				pstmt.executeUpdate();
+				conn.commit();
+			} catch (Exception e) {
+				conn.rollback();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
-	@Override
-	public Board selectBoardById(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public List<Board> getAllBoards(int limit, int offset) {
@@ -89,6 +112,31 @@ public class BoardRepositoryImpl implements BoardRepository {
 		}
 		System.out.println("로깅 totalCount : " + count);
 		return count;
+	}
+
+	@Override
+	public Board selectBoardById(int id) {
+		Board board = null;
+		try (Connection conn = DBUtil.getConnection();
+			PreparedStatement pstmt=conn.prepareStatement(SELECT_BOARD_BY_ID)){
+			pstmt.setInt(1, id);
+			try(ResultSet rs=pstmt.executeQuery()) {
+				if(rs.next()) {
+					board=Board.builder()
+							.id(rs.getInt("id"))
+							.userId(rs.getInt("user_id"))
+							.title(rs.getString("title"))
+							.content(rs.getString("content"))
+							.createdAt(rs.getTimestamp("created_at"))
+							.build();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return board;
 	}
 
 }
