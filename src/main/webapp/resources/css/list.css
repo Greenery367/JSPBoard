@@ -1,0 +1,91 @@
+@charset "UTF-8";
+@import url("board.css");
+
+.action{
+	margin-bottom: 20px;
+}
+.action .btn{
+	margin-right:10px;
+}
+
+.board-item{
+	margin-bottom:20px;
+	padding: 15px;
+	border-bottom: 1px solid #ddd;
+}
+.board-item h3{
+	margin: 0;
+}
+
+.board-item P{
+	margin: 5px 0;
+}
+
+.btn-create{
+	background-color: #28a745;
+	color: white;
+	text-align:center;
+}
+
+.btn-create:hover{
+	background-color: #218838;
+}
+
+.btn-edit{
+	background-color: #007bff;
+	color: white;
+	text-align:center;
+}
+
+.btn-edit:hover{
+	background-color: #0056b3;
+}
+.btn-delete{
+	background-color: #dc3545;
+	color: white;
+	text-align:center;
+}
+
+.btn-delete:hover{
+	background-color: #c82333;
+}
+
+.btn-back{
+	background-color: #6c757d;
+	color: white;
+}
+.btn-back:hover{
+	background-color: #5a6268;
+}
+
+
+.pagination{
+	text-align:center;
+	margin-top: 20px;
+	margin-bottom: 40px;
+}
+
+.pagination a{
+	display: inline-block;
+	padding: 5px 10px;
+	margin: 0 5px;
+	border: 1px solid #ddd;
+	text-decoration: none;
+	color: #007bff;
+}
+
+.pagination a:hover{
+	background-color: #007bff;
+	color: white;
+}
+
+.current-page{
+	display: inline-block;
+	padding: 5px 10px;
+	background-color: #007bff;
+	border: 1px solid #007bff;
+	border-radius: 4px;
+	text-decoration: none;
+	color: white;
+}
+
